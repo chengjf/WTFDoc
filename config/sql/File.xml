@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "sql-map-2.dtd">
+<sqlMap>
+	<!-- 为FilePaths类设置一个别名 -->
+	<typeAlias alias="File" type="com.chengjf.wtfdoc.bean.resources.File" />
+	
+	<resultMap id="FileResult" class="File">
+		<result property="key" column="Key" javaType="int" jdbcType="INTEGER"/>
+		<result property="content" column="Content" javaType="object"/>
+	</resultMap>
+	
+	<!-- 查找所有记录 -->
+	<select id="QueryAllFiles" resultMap="FileResult">
+		SELECT Key, Content FROM Files
+	</select>
+	
+	<!-- 查找指定记录 -->
+	<select id="QueryFileByKey" resultMap="FileResult" parameterClass="int">
+		SELECT Key, Content FROM Files where Key=#key#
+	</select>
+	
+</sqlMap>

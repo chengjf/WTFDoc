@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "sql-map-2.dtd">
+<sqlMap>
+	<!-- 为FilePaths类设置一个别名 -->
+	<typeAlias alias="FilePath" type="com.chengjf.wtfdoc.bean.resources.FilePath" />
+	
+	<resultMap id="FilePathResult" class="FilePath">
+		<result property="key" column="FileKey" javaType="int" jdbcType="INTEGER"/>
+		<result property="path" column="Path" javaType="string" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- 查找所有记录 -->
+	<select id="QueryAllFilePaths" resultMap="FilePathResult">
+		SELECT FileKey,Path FROM FilePaths
+	</select>
+</sqlMap>

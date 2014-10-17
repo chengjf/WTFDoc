@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<!-- Properties属性配置文件，加载数据库连接信息 -->
+	<properties resource="db/sqlite.properties" />
+
+<!-- 	<settings cacheModelsEnabled="true" enhancementEnabled="true" -->
+<!-- 	lazyLoadingEnabled="true" errorTracingEnabled="true" maxRequests="32" -->
+<!-- 	maxSessions="10" maxTransactions="5" useStatementNamespaces="false" /> -->
+
+	<!-- 配置Ibatis事务管理，使用JDBC事务类型，数据源使用Simple类型 -->
+	<transactionManager type="JDBC">
+		<dataSource type="SIMPLE">
+			<property name="JDBC.Driver" value="${sqlite.driver}" />
+			<property name="JDBC.ConnectionURL" value="${sqlite.url}" />
+			<property name="JDBC.Username" value="${sqlite.username}" />
+			<property name="JDBC.Password" value="${sqlite.password}" />
+		</dataSource>
+	</transactionManager>
+	<!-- 配置Ibatis要使用的SqlMap文件信息 -->
+	<sqlMap resource="sql/FilePath.xml" />
+	<sqlMap resource="sql/File.xml" />
+</sqlMapConfig>
