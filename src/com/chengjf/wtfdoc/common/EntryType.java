@@ -13,11 +13,13 @@
  */
 package com.chengjf.wtfdoc.common;
 
-/** 
- * @ClassName: EntryType  
- * @Description: TODO 
- * @author: CJF 
- * @date:2014-10-15 上午10:41:42   
+
+/**
+ * 入口类型
+ * 
+ * @ClassName: EntryType
+ * @author: chengjf
+ * @date: 2014-10-18
  */
 public enum EntryType {
 

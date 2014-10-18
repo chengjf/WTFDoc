@@ -43,10 +43,11 @@ import com.chengjf.wtfdoc.bean.index.IndexManager;
 import com.chengjf.wtfdoc.parser.impl.JavaParser;
 
 /**
+ * 程序主入口
+ * 
  * @ClassName: StartApplication
- * @Description: TODO
- * @author: CJF
- * @date:2014-10-15 下午1:55:22
+ * @author: chengjf
+ * @date: 2014-10-18
  */
 public class StartApplication extends Application {
 	/*
@@ -131,6 +132,13 @@ public class StartApplication extends Application {
 		launch(args);
 	}
 
+	/**
+	 * @Title: getList
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 * @param str
+	 * @return
+	 */
 	private ObservableList<String> getList(String str) {
 
 		ObservableList<String> strList = FXCollections.observableArrayList();
@@ -163,10 +171,24 @@ public class StartApplication extends Application {
 		return strList;
 	}
 
+	/**
+	 * 初始化应用
+	 * 
+	 * @Title: initApplication
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 */
 	private void initApplication() {
 
 	}
 
+	/**
+	 * 初始化索引
+	 * 
+	 * @Title: initIndexs
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 */
 	private static void initIndexs() {
 		File input = new File(
 				"E:/Code/jar-libs/gson/google-gson-2.2.4/gson-2.2.4-javadoc/index-all.html");

@@ -22,11 +22,13 @@ import com.chengjf.wtfdoc.bean.index.Index;
 import com.chengjf.wtfdoc.common.PatternCommonConstants;
 import com.chengjf.wtfdoc.parser.IParser;
 
-/** 
- * @ClassName: JavaParser  
- * @Description: TODO 
- * @author: CJF 
- * @date:2014-10-16 上午10:00:36   
+
+/**
+ * JavaDoc解析类
+ * 
+ * @ClassName: JavaParser
+ * @author: chengjf
+ * @date: 2014-10-18
  */
 public class JavaParser implements IParser{
 

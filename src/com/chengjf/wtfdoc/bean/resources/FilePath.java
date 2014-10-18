@@ -14,28 +14,68 @@
 package com.chengjf.wtfdoc.bean.resources;
 
 /**
- * @ClassName: FilePaths
- * @Description: TODO
- * @author: CJF
- * @date:2014-10-15 上午11:21:19
+ * 文件路径
+ * 
+ * @ClassName: FilePath
+ * @author: chengjf
+ * @date: 2014-10-18
  */
 public class FilePath {
 
+	/**
+	 * 文件的key
+	 * 
+	 * @Fields: key
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 */
 	private int key;
+
+	/**
+	 * 文件的路径
+	 * 
+	 * @Fields: path
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 */
 	private String path;
 
+	/**
+	 * @Title: getKey
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 * @return
+	 */
 	public int getKey() {
 		return key;
 	}
 
+	/**
+	 * @Title: setKey
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 * @param key
+	 */
 	public void setKey(int key) {
 		this.key = key;
 	}
 
+	/**
+	 * @Title: getPath
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 * @return
+	 */
 	public String getPath() {
 		return path;
 	}
 
+	/**
+	 * @Title: setPath
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 * @param path
+	 */
 	public void setPath(String path) {
 		this.path = path;
 	}

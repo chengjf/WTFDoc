@@ -18,12 +18,22 @@ import java.util.List;
 import com.chengjf.wtfdoc.bean.index.Index;
 
 /**
+ * 解析接口
+ * 
  * @ClassName: IParser
- * @Description: TODO
- * @author: CJF
- * @date:2014-10-16 上午9:43:31
+ * @author: chengjf
+ * @date: 2014-10-18
  */
 public interface IParser {
 
+	/**
+	 * 将传入的source进行解析，将解析生成的索引放入indexs中
+	 * 
+	 * @Title: index
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 * @param indexs
+	 * @param source
+	 */
 	public void index(List<Index> indexs, String source);
 }

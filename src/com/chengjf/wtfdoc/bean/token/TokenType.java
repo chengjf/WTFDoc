@@ -14,30 +14,70 @@
 package com.chengjf.wtfdoc.bean.token;
 
 /**
+ * 标识类型
+ * 
  * @ClassName: TokenType
- * @Description: TODO
- * @author: CJF
- * @date:2014-10-15 上午11:28:30
+ * @author: chengjf
+ * @date: 2014-10-18
  */
 public class TokenType {
+
+	/**
+	 * 标识类型key
+	 * 
+	 * @Fields: key
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 */
 	private int key;
+
+	/**
+	 * 标识类型名称
+	 * 
+	 * @Fields: typeName
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 */
 	private String typeName;
 
+	/**
+	 * @Title: getTypeName
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 * @return
+	 */
 	public String getTypeName() {
 		return typeName;
 	}
 
+	/**
+	 * @Title: setTypeName
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 * @param typeName
+	 */
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
 	}
 
+	/**
+	 * @Title: getKey
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 * @return
+	 */
 	public int getKey() {
 		return key;
 	}
 
+	/**
+	 * @Title: setKey
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 * @param key
+	 */
 	public void setKey(int key) {
 		this.key = key;
 	}
-
 
 }

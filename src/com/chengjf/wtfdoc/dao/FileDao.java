@@ -23,19 +23,39 @@ import com.chengjf.wtfdoc.db.DatabaseAccess;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
 /**
- * @ClassName: FilePathsDao
- * @Description: TODO
- * @author: CJF
- * @date:2014-10-15 下午12:46:54
+ * 文件Dao
+ * 
+ * @ClassName: FileDao
+ * @author: chengjf
+ * @date: 2014-10-18
  */
 public class FileDao {
 
-	SqlMapClient client = null;
+	/**
+	 * 数据库操作Client
+	 * 
+	 * @Fields: client
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 */
+	private SqlMapClient client = null;
 
+	/**
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 */
 	public FileDao() {
 		client = DatabaseAccess.getSqlMapClient();
 	}
 
+	/**
+	 * 获取所有File
+	 * 
+	 * @Title: getAllFiles
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 * @return 查询到File
+	 */
 	@SuppressWarnings("unchecked")
 	public List<File> getAllFiles() {
 		List<File> paths = new ArrayList<File>();
@@ -48,6 +68,15 @@ public class FileDao {
 		return paths;
 	}
 
+	/**
+	 * 根据给定的key查询File
+	 * 
+	 * @Title: getFile
+	 * @author: chengjf
+	 * @date: 2014-10-18
+	 * @param key
+	 * @return 返回查询到的File
+	 */
 	public File getFile(int key) {
 		File file = null;
 		try {
