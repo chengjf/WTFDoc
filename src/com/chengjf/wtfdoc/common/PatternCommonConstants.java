@@ -110,4 +110,16 @@ public class PatternCommonConstants {
 	public static String getMethodFullName(String url) {
 		return StringUtils.substringAfter(url, "#");
 	}
+	
+	/**
+	 * 从URL中获取文件名
+	 * 
+	 * @Title: getParentRegex
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 * @return
+	 */
+	public static Pattern getParentRegex() {
+		return Pattern.compile("/[^\n/]*\\.html");
+	}
 }

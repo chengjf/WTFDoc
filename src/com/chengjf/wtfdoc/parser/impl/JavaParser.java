@@ -22,7 +22,6 @@ import com.chengjf.wtfdoc.bean.index.Index;
 import com.chengjf.wtfdoc.common.PatternCommonConstants;
 import com.chengjf.wtfdoc.parser.IParser;
 
-
 /**
  * JavaDoc解析类
  * 
@@ -30,31 +29,48 @@ import com.chengjf.wtfdoc.parser.IParser;
  * @author: chengjf
  * @date: 2014-10-18
  */
-public class JavaParser implements IParser{
+public class JavaParser implements IParser {
 
-	/* (non-Javadoc)  
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @param indexs
-	 * @param source  
-	 * @see com.chengjf.wtfdoc.parser.IParser#index(java.util.List, java.lang.String)  
-	 */  
+	 * 
+	 * @param source
+	 * 
+	 * @see com.chengjf.wtfdoc.parser.IParser#index(java.util.List,
+	 * java.lang.String)
+	 */
 	@Override
 	public void index(List<Index> indexs, String source) {
-		
-		if(indexs == null) {
+
+		if (indexs == null) {
 			indexs = new ArrayList<Index>();
 		}
 		Pattern pattern = PatternCommonConstants.getIndexRegex();
 		Matcher m = pattern.matcher(source);
 		while (m.find()) {
 			String name = PatternCommonConstants.getMethodFullName(m.group(1));
-			if(name == null || name.equals("")) {
+			if (name == null || name.equals("")) {
 				continue;
 			}
 			Index index = new Index();
 			index.setName(name);
 			index.setUrl(m.group(1));
+			index.setParent(getParent(index.getUrl()));
 			indexs.add(index);
 		}
+	}
+
+	private String getParent(String url) {
+		Pattern pattern = PatternCommonConstants.getParentRegex();
+		Matcher m = pattern.matcher(url);
+		while (m.find()) {
+			String rs = m.group();
+			rs = rs.substring(1, rs.lastIndexOf("."));
+			return rs;
+		}
+		return "";
 	}
 
 }

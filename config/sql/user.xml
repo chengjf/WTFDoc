@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap      
-    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
-    "sql-map-2.dtd">
-<sqlMap>
-	<!-- 为Student类设置一个别名 -->
-	<typeAlias alias="user" type="com.chengjf.wtfdoc.bean.resources.Files" />
-
-</sqlMap>

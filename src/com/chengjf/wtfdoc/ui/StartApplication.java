@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -39,8 +37,8 @@ import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 
 import com.chengjf.wtfdoc.bean.index.Index;
-import com.chengjf.wtfdoc.bean.index.IndexManager;
 import com.chengjf.wtfdoc.parser.impl.JavaParser;
+import com.chengjf.wtfdoc.service.IndexManager;
 
 /**
  * 程序主入口
@@ -62,18 +60,11 @@ public class StartApplication extends Application {
 	@Override
 	public void start(Stage arg0) throws Exception {
 
-		List<Index> indexs = IndexManager.getIndexManager().getIndexs("java");
+		List<Index> indexs = IndexManager.getIndexManager().getIndexs("gson");
 		final Map<String, String> map = new HashMap<String, String>();
-		Pattern p = Pattern.compile("/[^\n/]*\\.html");
 		for (Index index : indexs) {
-			System.err.println(index.getUrl());
-			Matcher m = p.matcher(index.getUrl());
-			while(m.find()) {
-//				strList.add(index.getName());
-				System.err.println(m.group());
-				map.put(index.getName() + "_" + m.group().substring(1), index.getUrl());
-			}
-			
+			map.put(index.getName() + "_" + index.getParent(), index.getUrl());
+
 		}
 
 		final WebView view = new WebView();
@@ -89,7 +80,7 @@ public class StartApplication extends Application {
 		final TextField field = new TextField();
 		vBox.getChildren().add(field);
 
-		ObservableList<String> strList = getList(null);
+		ObservableList<String> strList = getList(null, null);
 		final ListView<String> listView = new ListView<String>(strList);
 		listView.setItems(strList);
 		listView.setPrefSize(600, 700);
@@ -103,7 +94,6 @@ public class StartApplication extends Application {
 						String url = "file:///E:/Code/jar-libs/gson/google-gson-2.2.4/gson-2.2.4-javadoc/"
 								+ map.get(arg2).substring(1);
 						view.getEngine().load(url);
-						System.err.println(arg2 + "_" + url);
 					}
 				});
 
@@ -112,8 +102,7 @@ public class StartApplication extends Application {
 					final ObservableValue<? extends String> observableValue,
 					final String oldValue, final String newValue) {
 				String str = newValue;
-				System.err.println(str);
-				ObservableList<String> strList = getList(str);
+				ObservableList<String> strList = getList("gson", str);
 				listView.getItems().clear();
 				listView.setItems(strList);
 			}
@@ -121,53 +110,48 @@ public class StartApplication extends Application {
 		Scene scene = new Scene(hBox);
 
 		Stage primaryStage = new Stage();
-		primaryStage.setTitle("Hello World!");
+		primaryStage.setTitle("WTFDoc");
 		primaryStage.setScene(scene);
 		primaryStage.setFullScreen(true);
 		primaryStage.show();
 	}
 
 	public static void main(String[] args) {
-		initIndexs();
-		launch(args);
+		try {
+			initIndexs();
+			launch(args);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 
 	/**
+	 * 将索引取出，转换成JavaFX识别的List
+	 * 该方法会取出给定命名空间下的所有索引
+	 * 
 	 * @Title: getList
 	 * @author: chengjf
 	 * @date: 2014-10-18
 	 * @param str
 	 * @return
 	 */
-	private ObservableList<String> getList(String str) {
+	private ObservableList<String> getList(String namespace, String keyword) {
 
 		ObservableList<String> strList = FXCollections.observableArrayList();
-		List<Index> indexs = IndexManager.getIndexManager().getIndexs("java");
-		Pattern p = Pattern.compile("/[^\n/]*\\.html");
-		if (str == null) {
+		List<Index> indexs = IndexManager.getIndexManager().getIndexs(namespace);
+		if (keyword == null) {
 			for (Index index : indexs) {
-				System.err.println(index.getUrl());
-				Matcher m = p.matcher(index.getUrl());
-				while(m.find()) {
-//					strList.add(index.getName());
-					System.err.println(m.group());
-					strList.add(index.getName() + "_" + m.group().substring(1));
-				}
+				strList.add(index.getName() + "_" + index.getParent());
 			}
 		} else {
 			for (Index index : indexs) {
-				if (index.getName().toLowerCase().startsWith(str.toLowerCase())) {
-					System.err.println(index.getUrl());
-					Matcher m = p.matcher(index.getUrl());
-					while(m.find()) {
-						System.err.println(m.group());
-						strList.add(index.getName() + "_" + m.group().substring(1));
-					}
+				if (index.getName().toLowerCase().startsWith(keyword.toLowerCase())) {
+					strList.add(index.getName() + "_" + index.getParent());
 				}
 			}
 		}
 
-		System.err.println("Index length " + strList.size());
 		return strList;
 	}
 
@@ -201,7 +185,7 @@ public class StartApplication extends Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		IndexManager.getIndexManager().addIndexs("java", list);
+		IndexManager.getIndexManager().addIndexs("gson", list);
 	}
 
 }

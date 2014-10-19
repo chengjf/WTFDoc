@@ -11,15 +11,17 @@
  * @date:2014-10-16 上午10:20:54  
  * @version V1.0    
  */
-package com.chengjf.wtfdoc.bean.index;
+package com.chengjf.wtfdoc.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.chengjf.wtfdoc.bean.index.Index;
+
 /**
- * 索引管理器
- * 不同的API文档都有自己的一套索引，使用该管理器进行管理
+ * 索引管理器 不同的API文档都有自己的一套索引，使用该管理器进行管理
  * 
  * @ClassName: IndexManager
  * @author: chengjf
@@ -98,7 +100,9 @@ public class IndexManager {
 	}
 
 	/**
-	 * 获取索引
+	 * 根据给定的命名空间获取索引
+	 * 如果给定的命名空间为null或空，返回所有的索引
+	 * 如果没有找到给定命名空间的所有，返回空的列表
 	 * 
 	 * @Title: getIndexs
 	 * @author: chengjf
@@ -107,6 +111,32 @@ public class IndexManager {
 	 * @return
 	 */
 	public List<Index> getIndexs(String namespace) {
-		return this.maps.get(namespace);
+		if(namespace == null || "".equals(namespace)) {
+			return this.getAllIndexs();
+		}else {
+			List<Index> list = this.maps.get(namespace);
+			if(list == null) {
+				return new ArrayList<Index>();
+			}else {
+				return this.maps.get(namespace);
+			}
+		}
+	}
+
+	/**
+	 * 获取所有命名空间下的索引
+	 * 
+	 * @Title: getAllIndexs
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 * @return
+	 */
+	public List<Index> getAllIndexs(){
+		List<Index> indexs = new ArrayList<Index>();
+		for(Map.Entry<String, List<Index>> entry : this.maps.entrySet()) {
+			List<Index> index = entry.getValue();
+			indexs.addAll(index);
+		}
+		return indexs;
 	}
 }

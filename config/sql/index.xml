@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "sql-map-2.dtd">
+<sqlMap>
+
+	<typeAlias alias="Index" type="com.chengjf.wtfdoc.bean.index.Index" />
+	
+	<resultMap id="inedexResult" class="Index">
+		<result property="name" column="name" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result property="type" column="type" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result property="url" column="url" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="parent" column="parent" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+	<update id="createIndexTable" parameterClass="java.lang.String">
+		CREATE TABLE IF NOT EXISTS #{database} (
+			name TEXT,
+			type TEXT,
+			url TEXT,
+			parent TEXT
+		)
+	</update>
+
+	<!-- 查找所有记录 -->
+	<select id="queryAllIndexs" resultMap="inedexResult" parameterClass="java.lang.String">
+		SELECT name, type, url, parent
+		FROM #{database}
+	</select>
+	
+	<insert id="insertIndex" parameterClass="java.util.HashMap">
+		INSERT INTO #database# VALUES(#name#,#type#,#url#,#parent#);
+	</insert>
+	
+	
+</sqlMap>

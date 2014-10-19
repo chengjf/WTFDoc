@@ -14,7 +14,6 @@
 package com.chengjf.wtfdoc.test;
 
 import java.nio.charset.Charset;
-import java.util.List;
 
 import junit.framework.TestCase;
 

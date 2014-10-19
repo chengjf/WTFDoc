@@ -52,6 +52,15 @@ public class Index {
 	private String url;
 
 	/**
+	 * 该索引所属的文件
+	 * 
+	 * @Fields: parent
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 */
+	private String parent;
+
+	/**
 	 * @Title: getName
 	 * @author: chengjf
 	 * @date: 2014-10-18
@@ -109,6 +118,38 @@ public class Index {
 	 */
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	/**
+	 * @Title: getParent
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 * @return
+	 */
+	public String getParent() {
+		return parent;
+	}
+
+	/**
+	 * @Title: setParent
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 * @param parent
+	 */
+	public void setParent(String parent) {
+		this.parent = parent;
+	}
+
+	/**
+	 * 便于从数据库中直接进行映射操作
+	 * 
+	 * @Title: setType
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 * @param type
+	 */
+	public void setType(String type) {
+		this.type = EntryType.valueOf(type);
 	}
 
 }
