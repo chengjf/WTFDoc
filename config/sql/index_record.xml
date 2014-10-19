@@ -16,8 +16,8 @@
 	<update id="createIndexRecordTable">
 		CREATE TABLE IF NOT EXISTS
 		indexrecord (
-		name TEXT,
-		url TEXT,
+			name TEXT,
+			url TEXT
 		)
 	</update>
 
@@ -30,5 +30,10 @@
 		INSERT INTO
 		indexrecord VALUES(#name#, #url#);
 	</insert>
+
+	<delete id="deleteIndexRecordByName" parameterClass="java.lang.String">
+		DELETE from
+		indexrecord where name = #name#
+	</delete>
 
 </sqlMap>

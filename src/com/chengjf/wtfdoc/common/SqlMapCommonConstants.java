@@ -64,6 +64,13 @@ public class SqlMapCommonConstants {
 	 * @date: 2014-10-19
 	 */
 	public static final String INSERT_INDEX = "insertIndex";
+	
+	/**
+	 * @Fields: DROP_INDEX_TABLE
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 */
+	public static final String DROP_INDEX_TABLE  = "dropIndexTable";
 
 	// ///////////////
 	// IndexRecord //
@@ -89,5 +96,12 @@ public class SqlMapCommonConstants {
 	 * @date: 2014-10-19
 	 */
 	public static final String INSERT_INDEXRECORD = "insertIndexRecord";
+	
+	/**
+	 * @Fields: DELETE_INDEXRECORD_BY_NAME
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 */
+	public static final String DELETE_INDEXRECORD_BY_NAME = "deleteIndexRecordByName";
 
 }

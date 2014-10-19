@@ -77,6 +77,12 @@ public class IndexDao {
 		}
 	}
 
+	/**
+	 * @Title: getAllIndexs
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Index> getAllIndexs() {
 		List<Index> indexs = null;
@@ -94,6 +100,12 @@ public class IndexDao {
 
 	}
 
+	/**
+	 * @Title: addIndex
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 * @param index
+	 */
 	public void addIndex(Index index) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(DATABASE_NAME, namespace);
@@ -102,7 +114,17 @@ public class IndexDao {
 		parameters.put(INDEX_URL, index.getUrl());
 		parameters.put(INDEX_PARENT, index.getParent());
 		try {
-			this.client.insert(SqlMapCommonConstants.INSERT_INDEX, index);
+			this.client.insert(SqlMapCommonConstants.INSERT_INDEX, parameters);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void remove() {
+		try {
+			this.client.update(SqlMapCommonConstants.DROP_INDEX_TABLE,
+					this.namespace);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

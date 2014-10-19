@@ -17,9 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -60,16 +58,9 @@ public class StartApplication extends Application {
 	@Override
 	public void start(Stage arg0) throws Exception {
 
-		List<Index> indexs = IndexManager.getIndexManager().getIndexs("gson");
-		final Map<String, String> map = new HashMap<String, String>();
-		for (Index index : indexs) {
-			map.put(index.getName() + "_" + index.getParent(), index.getUrl());
-
-		}
-
 		final WebView view = new WebView();
 		view.getEngine()
-				.load("file:///E:/Code/jar-libs/gson/google-gson-2.2.4/gson-2.2.4-javadoc/com/google/gson/JsonArray.html");
+				.load("file:///E:/Code/jar-libs/gson/google-gson-2.2.4/gson-2.2.4-javadoc/index-all.html");
 
 		// HBox
 		HBox hBox = new HBox();
@@ -91,9 +82,15 @@ public class StartApplication extends Application {
 					@Override
 					public void changed(ObservableValue<? extends String> arg0,
 							String arg1, String arg2) {
-						String url = "file:///E:/Code/jar-libs/gson/google-gson-2.2.4/gson-2.2.4-javadoc/"
-								+ map.get(arg2).substring(1);
-						view.getEngine().load(url);
+						if (arg2 == null || "".equals(arg2)) {
+
+						} else {
+							String url = "file:///E:/Code/jar-libs/gson/google-gson-2.2.4/gson-2.2.4-javadoc/"
+									+ IndexManager.getIndexManager()
+											.getIndex("gson", arg2).getUrl();
+							System.err.println(url);
+							view.getEngine().load(url);
+						}
 					}
 				});
 
@@ -112,13 +109,14 @@ public class StartApplication extends Application {
 		Stage primaryStage = new Stage();
 		primaryStage.setTitle("WTFDoc");
 		primaryStage.setScene(scene);
-		primaryStage.setFullScreen(true);
+//		primaryStage.setFullScreen(true);
 		primaryStage.show();
 	}
 
 	public static void main(String[] args) {
 		try {
-			initIndexs();
+			// initIndexs();
+			initApplication();
 			launch(args);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -127,8 +125,7 @@ public class StartApplication extends Application {
 	}
 
 	/**
-	 * 将索引取出，转换成JavaFX识别的List
-	 * 该方法会取出给定命名空间下的所有索引
+	 * 将索引取出，转换成JavaFX识别的List 该方法会取出给定命名空间下的所有索引
 	 * 
 	 * @Title: getList
 	 * @author: chengjf
@@ -139,14 +136,16 @@ public class StartApplication extends Application {
 	private ObservableList<String> getList(String namespace, String keyword) {
 
 		ObservableList<String> strList = FXCollections.observableArrayList();
-		List<Index> indexs = IndexManager.getIndexManager().getIndexs(namespace);
+		List<Index> indexs = IndexManager.getIndexManager()
+				.getIndexs(namespace);
 		if (keyword == null) {
 			for (Index index : indexs) {
 				strList.add(index.getName() + "_" + index.getParent());
 			}
 		} else {
 			for (Index index : indexs) {
-				if (index.getName().toLowerCase().startsWith(keyword.toLowerCase())) {
+				if (index.getName().toLowerCase()
+						.startsWith(keyword.toLowerCase())) {
 					strList.add(index.getName() + "_" + index.getParent());
 				}
 			}
@@ -162,8 +161,9 @@ public class StartApplication extends Application {
 	 * @author: chengjf
 	 * @date: 2014-10-18
 	 */
-	private void initApplication() {
-
+	private static void initApplication() {
+		// initIndexs();
+		IndexManager.getIndexManager().loadFromDatabase();
 	}
 
 	/**

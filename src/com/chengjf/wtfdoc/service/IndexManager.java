@@ -17,8 +17,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.chengjf.wtfdoc.bean.index.Index;
+import com.chengjf.wtfdoc.bean.index.IndexRecord;
+import com.chengjf.wtfdoc.dao.IndexDao;
+import com.chengjf.wtfdoc.dao.IndexRecordDao;
 
 /**
  * 索引管理器 不同的API文档都有自己的一套索引，使用该管理器进行管理
@@ -36,7 +40,7 @@ public class IndexManager {
 	 * @author: chengjf
 	 * @date: 2014-10-18
 	 */
-	private Map<String, List<Index>> maps;
+	private Map<String, Map<String, Index>> maps;
 
 	/**
 	 * 索引管理器的实例
@@ -52,7 +56,7 @@ public class IndexManager {
 	 * @date: 2014-10-18
 	 */
 	private IndexManager() {
-		this.maps = new HashMap<String, List<Index>>();
+		this.maps = new HashMap<String, Map<String, Index>>();
 	}
 
 	/**
@@ -84,7 +88,23 @@ public class IndexManager {
 	 * @param indexs
 	 */
 	public void addIndexs(String namespace, List<Index> indexs) {
-		this.maps.put(namespace, indexs);
+
+		if (this.maps.containsKey(namespace)) {
+			this.removeIndexs(namespace);
+		}
+		Map<String, Index> map = this.listToMap(indexs);
+		this.maps.put(namespace, map);
+		//
+		IndexRecordDao dao = new IndexRecordDao();
+		IndexRecord indexRecords = new IndexRecord();
+		indexRecords.setName(namespace);
+		indexRecords.setUrl(namespace);
+		dao.addIndexRecord(indexRecords);
+		//
+		IndexDao indexDao = new IndexDao(namespace);
+		for (Index index : indexs) {
+			indexDao.addIndex(index);
+		}
 	}
 
 	/**
@@ -97,12 +117,16 @@ public class IndexManager {
 	 */
 	public void removeIndexs(String namespace) {
 		this.maps.remove(namespace);
+		//
+		IndexRecordDao dao = new IndexRecordDao();
+		dao.removeIndexRecord(namespace);
+		//
+		IndexDao indexDao = new IndexDao(namespace);
+		indexDao.remove();
 	}
 
 	/**
-	 * 根据给定的命名空间获取索引
-	 * 如果给定的命名空间为null或空，返回所有的索引
-	 * 如果没有找到给定命名空间的所有，返回空的列表
+	 * 根据给定的命名空间获取索引 如果给定的命名空间为null或空，返回所有的索引 如果没有找到给定命名空间的所有，返回空的列表
 	 * 
 	 * @Title: getIndexs
 	 * @author: chengjf
@@ -111,15 +135,12 @@ public class IndexManager {
 	 * @return
 	 */
 	public List<Index> getIndexs(String namespace) {
-		if(namespace == null || "".equals(namespace)) {
+		if (namespace == null || "".equals(namespace)) {
 			return this.getAllIndexs();
-		}else {
-			List<Index> list = this.maps.get(namespace);
-			if(list == null) {
-				return new ArrayList<Index>();
-			}else {
-				return this.maps.get(namespace);
-			}
+		} else {
+			return this
+					.mapToList((Map<String, Index>) this.maps.get(namespace));
+
 		}
 	}
 
@@ -131,12 +152,77 @@ public class IndexManager {
 	 * @date: 2014-10-19
 	 * @return
 	 */
-	public List<Index> getAllIndexs(){
+	public List<Index> getAllIndexs() {
 		List<Index> indexs = new ArrayList<Index>();
-		for(Map.Entry<String, List<Index>> entry : this.maps.entrySet()) {
-			List<Index> index = entry.getValue();
+		for (Entry<String, Map<String, Index>> entry : this.maps.entrySet()) {
+			List<Index> index = this.mapToList(entry.getValue());
 			indexs.addAll(index);
 		}
+		return indexs;
+	}
+
+	/**
+	 * 从数据库加载数据
+	 * 
+	 * @Title: loadFromDatabase
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 */
+	public void loadFromDatabase() {
+		IndexRecordDao dao = new IndexRecordDao();
+		List<IndexRecord> indexRecords = dao.getAllIndexRecord();
+		for (IndexRecord indexRecord : indexRecords) {
+			String name = indexRecord.getName();
+			IndexDao indexDao = new IndexDao(name);
+			this.maps.put(name, this.listToMap(indexDao.getAllIndexs()));
+		}
+	}
+
+	/**
+	 * @Title: getIndex
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 * @param namespace
+	 * @param key
+	 * @return
+	 */
+	public Index getIndex(String namespace, String key) {
+
+		Index index = null;
+		if (this.maps.containsKey(namespace)) {
+			index = this.maps.get(namespace).get(key);
+		}
+		return index;
+	}
+
+	/**
+	 * @Title: listToMap
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 * @param indexs
+	 * @return
+	 */
+	private Map<String, Index> listToMap(List<Index> indexs) {
+		Map<String, Index> map = new HashMap<String, Index>();
+		for (Index index : indexs) {
+			map.put(index.getName()+"_" + index.getParent(), index);
+		}
+		return map;
+	}
+
+	/**
+	 * @Title: mapToList
+	 * @author: chengjf
+	 * @date: 2014-10-19
+	 * @param map
+	 * @return
+	 */
+	private List<Index> mapToList(Map<String, Index> map) {
+		List<Index> indexs = new ArrayList<Index>();
+		for (Map.Entry<String, Index> entry : map.entrySet()) {
+			indexs.add(entry.getValue());
+		}
+
 		return indexs;
 	}
 }

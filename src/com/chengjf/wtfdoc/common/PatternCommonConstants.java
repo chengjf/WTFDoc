@@ -97,7 +97,7 @@ public class PatternCommonConstants {
 	 * @return
 	 */
 	public static boolean isMethod(String url) {
-		return url.endsWith("(");
+		return url.endsWith(")");
 	}
 
 	/**

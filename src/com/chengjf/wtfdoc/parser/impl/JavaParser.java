@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.chengjf.wtfdoc.bean.index.Index;
+import com.chengjf.wtfdoc.common.EntryType;
 import com.chengjf.wtfdoc.common.PatternCommonConstants;
 import com.chengjf.wtfdoc.parser.IParser;
 
@@ -56,6 +57,11 @@ public class JavaParser implements IParser {
 			}
 			Index index = new Index();
 			index.setName(name);
+			if(PatternCommonConstants.isMethod(name)) {
+				index.setType(EntryType.Method.toString());
+			}else{
+				index.setType(EntryType.Field.toString());
+			}
 			index.setUrl(m.group(1));
 			index.setParent(getParent(index.getUrl()));
 			indexs.add(index);

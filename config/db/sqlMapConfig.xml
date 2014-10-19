@@ -20,6 +20,8 @@
 		</dataSource>
 	</transactionManager>
 	<!-- 配置Ibatis要使用的SqlMap文件信息 -->
-	<sqlMap resource="sql/FilePath.xml" />
-	<sqlMap resource="sql/File.xml" />
+	<sqlMap resource="sql/filepath.xml" />
+	<sqlMap resource="sql/file.xml" />
+	<sqlMap resource="sql/index.xml" />
+	<sqlMap resource="sql/index_record.xml" />
 </sqlMapConfig>

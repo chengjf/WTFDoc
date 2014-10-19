@@ -96,9 +96,9 @@ public class Index {
 	 * @date: 2014-10-18
 	 * @param type
 	 */
-	public void setType(EntryType type) {
-		this.type = type;
-	}
+//	public void setType(EntryType type) {
+//		this.type = type;
+//	}
 
 	/**
 	 * @Title: getUrl
