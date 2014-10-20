@@ -14,15 +14,22 @@
 package com.chengjf.wtfdoc.ui;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -42,6 +49,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -61,6 +69,8 @@ import com.chengjf.wtfdoc.service.IndexManager;
 public class StartApplication extends Application {
 
 	private final static String INDEX = "index-all.html";
+
+	private Map<String, String> tempFilePath = new HashMap<String, String>();
 
 	/*
 	 * (non-Javadoc)
@@ -108,6 +118,7 @@ public class StartApplication extends Application {
 
 		// Browser
 		final WebView view = new WebView();
+		view.getEngine().setJavaScriptEnabled(true);
 
 		// HBox
 		HBox hBox = new HBox();
@@ -140,9 +151,15 @@ public class StartApplication extends Application {
 											index.getApi());
 							if (indexRecord.getUrl().endsWith("zip")
 									|| indexRecord.getUrl().endsWith("jar")) {
-								String str = getHTML(indexRecord.getUrl(),
-										index.getUrl());
-								view.getEngine().loadContent(str);
+
+								String tempUrl = getTempUrl(index.getApi(),
+										indexRecord.getUrl());
+								String url = "file:///" + tempUrl + "/" + index.getUrl();
+								// String href = index.getUrl().substring(
+								// index.getUrl().indexOf("#"));
+								view.getEngine().load(url);
+								// view.getEngine().executeScript(
+								// "window.location=\"" + href + "\";");
 							} else {
 								String url = indexRecord.getUrl()
 										+ index.getUrl();
@@ -151,6 +168,7 @@ public class StartApplication extends Application {
 
 						}
 					}
+
 				});
 
 		field.textProperty().addListener(new ChangeListener<String>() {
@@ -173,6 +191,19 @@ public class StartApplication extends Application {
 		primaryStage.setScene(scene);
 		// primaryStage.setFullScreen(true);
 		primaryStage.show();
+		
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			
+			@Override
+			public void handle(WindowEvent arg0) {
+				System.err.println("Close!");
+				// 清除临时文件
+				for(Entry<String, String> entry : tempFilePath.entrySet()) {
+					String path = entry.getValue();
+					FileUtils.deleteQuietly(new File(path));
+				}
+			}
+		});
 	}
 
 	public static void main(String[] args) {
@@ -368,8 +399,53 @@ public class StartApplication extends Application {
 		return null;
 	}
 
-	// private static String getString(JarEntry entry, String path) {
-	//
-	// }
+	private String getTempUrl(String api, String url) {
+		String tempUrl = this.tempFilePath.get(api);
+		if (tempUrl == null) {
 
+			try {
+				ZipFile zipFile = new ZipFile(url);
+				tempUrl = createTempDirectory().getAbsolutePath();
+				Enumeration<? extends ZipEntry> entries = zipFile.entries();
+				while (entries.hasMoreElements()) {
+					ZipEntry entry = entries.nextElement();
+					File entryDestination = new File(tempUrl, entry.getName());
+					entryDestination.getParentFile().mkdirs();
+					if (entry.isDirectory())
+						entryDestination.mkdirs();
+					else {
+						InputStream in = zipFile.getInputStream(entry);
+						OutputStream out = new FileOutputStream(
+								entryDestination);
+						IOUtils.copy(in, out);
+						IOUtils.closeQuietly(in);
+						IOUtils.closeQuietly(out);
+					}
+				}
+				this.tempFilePath.put(api, tempUrl);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return tempUrl;
+	}
+
+	public static File createTempDirectory() throws IOException {
+		final File temp;
+
+		temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
+
+		if (!(temp.delete())) {
+			throw new IOException("Could not delete temp file: "
+					+ temp.getAbsolutePath());
+		}
+
+		if (!(temp.mkdir())) {
+			throw new IOException("Could not create temp directory: "
+					+ temp.getAbsolutePath());
+		}
+
+		return (temp);
+	}
 }
