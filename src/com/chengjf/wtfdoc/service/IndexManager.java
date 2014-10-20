@@ -50,6 +50,15 @@ public class IndexManager {
 	 * @date: 2014-10-18
 	 */
 	private static IndexManager instance;
+	
+	/**
+	 *  索引记录
+	 * 
+	 * @Fields: records
+	 * @author: chengjf
+	 * @date: 2014-10-20
+	 */
+	private Map<String, IndexRecord> records;
 
 	/**
 	 * @author: chengjf
@@ -57,6 +66,7 @@ public class IndexManager {
 	 */
 	private IndexManager() {
 		this.maps = new HashMap<String, Map<String, Index>>();
+		this.records = new HashMap<String, IndexRecord>();
 	}
 
 	/**
@@ -87,19 +97,21 @@ public class IndexManager {
 	 * @param namespace
 	 * @param indexs
 	 */
-	public void addIndexs(String namespace, List<Index> indexs) {
+	public void addIndexs(String namespace, String url, List<Index> indexs) {
 
 		if (this.maps.containsKey(namespace)) {
 			this.removeIndexs(namespace);
 		}
 		Map<String, Index> map = this.listToMap(indexs);
 		this.maps.put(namespace, map);
+		
 		//
 		IndexRecordDao dao = new IndexRecordDao();
-		IndexRecord indexRecords = new IndexRecord();
-		indexRecords.setName(namespace);
-		indexRecords.setUrl(namespace);
-		dao.addIndexRecord(indexRecords);
+		IndexRecord indexRecord = new IndexRecord();
+		indexRecord.setName(namespace);
+		indexRecord.setUrl(url);
+		dao.addIndexRecord(indexRecord);
+		this.records.put(namespace, indexRecord);
 		//
 		IndexDao indexDao = new IndexDao(namespace);
 		for (Index index : indexs) {
@@ -117,6 +129,7 @@ public class IndexManager {
 	 */
 	public void removeIndexs(String namespace) {
 		this.maps.remove(namespace);
+		this.records.remove(namespace);
 		//
 		IndexRecordDao dao = new IndexRecordDao();
 		dao.removeIndexRecord(namespace);
@@ -174,6 +187,7 @@ public class IndexManager {
 		for (IndexRecord indexRecord : indexRecords) {
 			String name = indexRecord.getName();
 			IndexDao indexDao = new IndexDao(name);
+			this.records.put(name, indexRecord);
 			this.maps.put(name, this.listToMap(indexDao.getAllIndexs()));
 		}
 	}
@@ -189,8 +203,16 @@ public class IndexManager {
 	public Index getIndex(String namespace, String key) {
 
 		Index index = null;
-		if (this.maps.containsKey(namespace)) {
-			index = this.maps.get(namespace).get(key);
+		if(namespace != null && !namespace.equals("")) {
+			if (this.maps.containsKey(namespace)) {
+				index = this.maps.get(namespace).get(key);
+			}
+		}else {
+			for (Entry<String, Map<String, Index>> entry : this.maps.entrySet()) {
+				if(entry.getValue().containsKey(key)) {
+					index = entry.getValue().get(key);
+				}
+			}
 		}
 		return index;
 	}
@@ -224,5 +246,31 @@ public class IndexManager {
 		}
 
 		return indexs;
+	}
+	
+	/**
+	 * @Title: getIndexRecord
+	 * @author: chengjf
+	 * @date: 2014-10-20
+	 * @param namespace
+	 * @return
+	 */
+	public IndexRecord getIndexRecord(String namespace) {
+		IndexRecord indexRecord = this.records.get(namespace);
+		return indexRecord;
+	}
+	
+	/**
+	 * @Title: getAllIndexRecords
+	 * @author: chengjf
+	 * @date: 2014-10-20
+	 * @return
+	 */
+	public List<IndexRecord> getAllIndexRecords(){
+		List<IndexRecord> indexRecords = new ArrayList<IndexRecord>();
+		for (Map.Entry<String, IndexRecord> entry : this.records.entrySet()) {
+			indexRecords.add(entry.getValue());
+		}
+		return indexRecords;
 	}
 }

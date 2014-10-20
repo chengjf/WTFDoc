@@ -27,13 +27,12 @@ import com.chengjf.wtfdoc.bean.index.Index;
 public interface IParser {
 
 	/**
-	 * 将传入的source进行解析，将解析生成的索引放入indexs中
-	 * 
 	 * @Title: index
 	 * @author: chengjf
-	 * @date: 2014-10-18
+	 * @date: 2014-10-20
 	 * @param indexs
 	 * @param source
+	 * @param api
 	 */
-	public void index(List<Index> indexs, String source);
+	void index(List<Index> indexs, String source, String api);
 }

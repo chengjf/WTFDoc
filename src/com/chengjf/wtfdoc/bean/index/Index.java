@@ -59,6 +59,14 @@ public class Index {
 	 * @date: 2014-10-19
 	 */
 	private String parent;
+	
+	
+	/**
+	 * @Fields: api
+	 * @author: chengjf
+	 * @date: 2014-10-20
+	 */
+	private String api;
 
 	/**
 	 * @Title: getName
@@ -150,6 +158,14 @@ public class Index {
 	 */
 	public void setType(String type) {
 		this.type = EntryType.valueOf(type);
+	}
+
+	public void setApi(String api) {
+		this.api = api;
+	}
+
+	public String getApi() {
+		return api;
 	}
 
 }

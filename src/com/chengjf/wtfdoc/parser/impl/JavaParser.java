@@ -43,7 +43,7 @@ public class JavaParser implements IParser {
 	 * java.lang.String)
 	 */
 	@Override
-	public void index(List<Index> indexs, String source) {
+	public void index(List<Index> indexs, String source, String api) {
 
 		if (indexs == null) {
 			indexs = new ArrayList<Index>();
@@ -64,6 +64,7 @@ public class JavaParser implements IParser {
 			}
 			index.setUrl(m.group(1));
 			index.setParent(getParent(index.getUrl()));
+			index.setApi(api);
 			indexs.add(index);
 		}
 	}

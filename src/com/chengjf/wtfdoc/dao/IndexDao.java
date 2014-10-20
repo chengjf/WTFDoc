@@ -38,6 +38,7 @@ public class IndexDao {
 	public static final String INDEX_TYPE = "type";
 	public static final String INDEX_URL = "url";
 	public static final String INDEX_PARENT = "parent";
+	public static final String INDEX_API = "api";
 
 	/**
 	 * @Fields: client
@@ -113,6 +114,7 @@ public class IndexDao {
 		parameters.put(INDEX_TYPE, index.getType().toString());
 		parameters.put(INDEX_URL, index.getUrl());
 		parameters.put(INDEX_PARENT, index.getParent());
+		parameters.put(INDEX_API, index.getApi());
 		try {
 			this.client.insert(SqlMapCommonConstants.INSERT_INDEX, parameters);
 		} catch (SQLException e) {
