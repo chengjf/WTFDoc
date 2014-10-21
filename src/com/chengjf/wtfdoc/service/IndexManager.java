@@ -193,11 +193,15 @@ public class IndexManager {
 	}
 
 	/**
+	 * 获取索引
+	 * 
+	 * 如果命名空间为null或空，将从所有的命名空间中搜寻索引
+	 * 
 	 * @Title: getIndex
 	 * @author: chengjf
 	 * @date: 2014-10-19
-	 * @param namespace
-	 * @param key
+	 * @param namespace 命名空间
+	 * @param key 索引名称
 	 * @return
 	 */
 	public Index getIndex(String namespace, String key) {
@@ -218,6 +222,8 @@ public class IndexManager {
 	}
 
 	/**
+	 * 将List转换成Map
+	 * 
 	 * @Title: listToMap
 	 * @author: chengjf
 	 * @date: 2014-10-19
@@ -233,6 +239,8 @@ public class IndexManager {
 	}
 
 	/**
+	 * 将Map转换成List
+	 * 
 	 * @Title: mapToList
 	 * @author: chengjf
 	 * @date: 2014-10-19
@@ -249,6 +257,8 @@ public class IndexManager {
 	}
 	
 	/**
+	 * 获取指定的索引
+	 * 
 	 * @Title: getIndexRecord
 	 * @author: chengjf
 	 * @date: 2014-10-20
@@ -261,6 +271,8 @@ public class IndexManager {
 	}
 	
 	/**
+	 * 获取所有的索引记录
+	 * 
 	 * @Title: getAllIndexRecords
 	 * @author: chengjf
 	 * @date: 2014-10-20

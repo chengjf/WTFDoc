@@ -14,22 +14,7 @@
 package com.chengjf.wtfdoc.ui;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Stack;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -51,13 +36,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
 import com.chengjf.wtfdoc.bean.index.Index;
-import com.chengjf.wtfdoc.bean.index.IndexRecord;
-import com.chengjf.wtfdoc.parser.impl.JavaParser;
 import com.chengjf.wtfdoc.service.IndexManager;
+import com.chengjf.wtfdoc.service.ParseManager;
+import com.chengjf.wtfdoc.service.UrlManager;
 
 /**
  * 程序主入口
@@ -67,10 +49,6 @@ import com.chengjf.wtfdoc.service.IndexManager;
  * @date: 2014-10-18
  */
 public class StartApplication extends Application {
-
-	private final static String INDEX = "index-all.html";
-
-	private Map<String, String> tempFilePath = new HashMap<String, String>();
 
 	/*
 	 * (non-Javadoc)
@@ -143,29 +121,8 @@ public class StartApplication extends Application {
 						if (arg2 == null || "".equals(arg2)) {
 
 						} else {
-							Index index = IndexManager.getIndexManager()
-									.getIndex(null, arg2);
-
-							IndexRecord indexRecord = IndexManager
-									.getIndexManager().getIndexRecord(
-											index.getApi());
-							if (indexRecord.getUrl().endsWith("zip")
-									|| indexRecord.getUrl().endsWith("jar")) {
-
-								String tempUrl = getTempUrl(index.getApi(),
-										indexRecord.getUrl());
-								String url = "file:///" + tempUrl + "/" + index.getUrl();
-								// String href = index.getUrl().substring(
-								// index.getUrl().indexOf("#"));
-								view.getEngine().load(url);
-								// view.getEngine().executeScript(
-								// "window.location=\"" + href + "\";");
-							} else {
-								String url = indexRecord.getUrl()
-										+ index.getUrl();
-								view.getEngine().load(url);
-							}
-
+							String url = UrlManager.getInstance().getUrl(arg2);
+							view.getEngine().load(url);
 						}
 					}
 
@@ -191,17 +148,14 @@ public class StartApplication extends Application {
 		primaryStage.setScene(scene);
 		// primaryStage.setFullScreen(true);
 		primaryStage.show();
-		
+
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			
+
 			@Override
 			public void handle(WindowEvent arg0) {
 				System.err.println("Close!");
-				// 清除临时文件
-				for(Entry<String, String> entry : tempFilePath.entrySet()) {
-					String path = entry.getValue();
-					FileUtils.deleteQuietly(new File(path));
-				}
+				UrlManager.getInstance().clear();
+
 			}
 		});
 	}
@@ -260,28 +214,6 @@ public class StartApplication extends Application {
 	}
 
 	/**
-	 * 初始化索引
-	 * 
-	 * @Title: initIndexs
-	 * @author: chengjf
-	 * @date: 2014-10-18
-	 */
-	private static void initIndexs() {
-		// File input = new File(
-		// "E:/Code/jar-libs/gson/google-gson-2.2.4/gson-2.2.4-javadoc/index-all.html");
-		// JavaParser parser = new JavaParser();
-		// List<Index> list = new ArrayList<Index>();
-		// try {
-		// parser.index(list, FileUtils.readFileToString(input, Charset
-		// .defaultCharset().name()),);
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// IndexManager.getIndexManager().addIndexs("gson", list);
-	}
-
-	/**
 	 * 增加API文档
 	 * 
 	 * @Title: addDoc
@@ -298,154 +230,7 @@ public class StartApplication extends Application {
 				new FileChooser.ExtensionFilter("ZIP", "*.zip"));
 		fileChooser.setTitle("Open API Doc Zip File");
 		File file = fileChooser.showOpenDialog(stage);
-		parseJar(file);
+		ParseManager.getInstance().parse(file);
 	}
 
-	private void parseJar(File file) {
-		String namespace = getNamespace(file.getName());
-		JarFile jar = null;
-		try {
-			jar = new JarFile(file);
-			for (Enumeration<JarEntry> enums = jar.entries(); enums
-					.hasMoreElements();) {
-				JarEntry entry = enums.nextElement();
-				if (!entry.isDirectory()) {
-					if (entry.getName().equals(INDEX)) {
-						InputStream inputStream = jar.getInputStream(entry);
-						String str = IOUtils.toString(inputStream);
-						parseIndex(namespace, file.getAbsolutePath(), str);
-					}
-				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			if (jar != null) {
-				try {
-					jar.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	/**
-	 * 解析并加入IndexManager
-	 * 
-	 * @Title: parseIndex
-	 * @author: chengjf
-	 * @date: 2014-10-20
-	 * @param namespace
-	 * @param str
-	 */
-	private static void parseIndex(String namespace, String url, String str) {
-		JavaParser parser = new JavaParser();
-		List<Index> list = new ArrayList<Index>();
-		parser.index(list, str, namespace);
-		IndexManager.getIndexManager().addIndexs(namespace, url, list);
-	}
-
-	/**
-	 * sqlite table 不能有"-"和 "."
-	 * 
-	 * @Title: getNamespace
-	 * @author: chengjf
-	 * @date: 2014-10-20
-	 * @param str
-	 * @return
-	 */
-	private static String getNamespace(String str) {
-		// - -> _
-		str = str.replaceAll("-", "_");
-		// remove javadoc
-		str = str.substring(0, str.lastIndexOf("_"));
-
-		str = str.replaceAll("\\.", "_");
-		return str;
-	}
-
-	private static String getHTML(String filePath, String url) {
-		JarFile jar = null;
-		if (url.startsWith("./")) {
-			url = url.substring(2);
-		}
-		url = url.substring(0, url.indexOf("#"));
-		try {
-			jar = new JarFile(filePath);
-			for (Enumeration<JarEntry> enums = jar.entries(); enums
-					.hasMoreElements();) {
-				JarEntry entry = enums.nextElement();
-				if (url.equals(entry.getName())) {
-					InputStream inputStream = jar.getInputStream(entry);
-					return IOUtils.toString(inputStream);
-				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-
-			try {
-				jar.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		return null;
-	}
-
-	private String getTempUrl(String api, String url) {
-		String tempUrl = this.tempFilePath.get(api);
-		if (tempUrl == null) {
-
-			try {
-				ZipFile zipFile = new ZipFile(url);
-				tempUrl = createTempDirectory().getAbsolutePath();
-				Enumeration<? extends ZipEntry> entries = zipFile.entries();
-				while (entries.hasMoreElements()) {
-					ZipEntry entry = entries.nextElement();
-					File entryDestination = new File(tempUrl, entry.getName());
-					entryDestination.getParentFile().mkdirs();
-					if (entry.isDirectory())
-						entryDestination.mkdirs();
-					else {
-						InputStream in = zipFile.getInputStream(entry);
-						OutputStream out = new FileOutputStream(
-								entryDestination);
-						IOUtils.copy(in, out);
-						IOUtils.closeQuietly(in);
-						IOUtils.closeQuietly(out);
-					}
-				}
-				this.tempFilePath.put(api, tempUrl);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return tempUrl;
-	}
-
-	public static File createTempDirectory() throws IOException {
-		final File temp;
-
-		temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
-
-		if (!(temp.delete())) {
-			throw new IOException("Could not delete temp file: "
-					+ temp.getAbsolutePath());
-		}
-
-		if (!(temp.mkdir())) {
-			throw new IOException("Could not create temp directory: "
-					+ temp.getAbsolutePath());
-		}
-
-		return (temp);
-	}
 }
