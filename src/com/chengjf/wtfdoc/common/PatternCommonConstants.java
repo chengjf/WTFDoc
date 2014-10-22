@@ -37,14 +37,25 @@ public class PatternCommonConstants {
 	}
 
 	/**
-	 * @Title: getIndexRegex
+	 * @Title: getIndexRegex1
 	 * @author: chengjf
 	 * @date: 2014-10-18
 	 * @return
 	 */
-	public static Pattern getIndexRegex() {
+	public static Pattern getIndexRegex1() {
 		return Pattern
 				.compile("<DT><A HREF=\"([^\"]*)\"[^>]*><B>([^<]*)</B></A>");
+	}
+	
+	/**
+	 * @Title: getIndexRegex2
+	 * @author: chengjf
+	 * @date: 2014-10-21
+	 * @return
+	 */
+	public static Pattern getIndexRegex2() {
+		return Pattern
+				.compile("<dt><span class=\"strong\"><a href=\"([^\"]*)\"[^>]*>([^<]*)</a>");
 	}
 
 	/**

@@ -48,7 +48,7 @@ public class JavaParser implements IParser {
 		if (indexs == null) {
 			indexs = new ArrayList<Index>();
 		}
-		Pattern pattern = PatternCommonConstants.getIndexRegex();
+		Pattern pattern = PatternCommonConstants.getIndexRegex1();
 		Matcher m = pattern.matcher(source);
 		while (m.find()) {
 			String name = PatternCommonConstants.getMethodFullName(m.group(1));
@@ -57,15 +57,37 @@ public class JavaParser implements IParser {
 			}
 			Index index = new Index();
 			index.setName(name);
-			if(PatternCommonConstants.isMethod(name)) {
+			if (PatternCommonConstants.isMethod(name)) {
 				index.setType(EntryType.Method.toString());
-			}else{
+			} else {
 				index.setType(EntryType.Field.toString());
 			}
 			index.setUrl(m.group(1));
 			index.setParent(getParent(index.getUrl()));
 			index.setApi(api);
 			indexs.add(index);
+		}
+		if (indexs.size() == 0) {
+			pattern = PatternCommonConstants.getIndexRegex2();
+			m = pattern.matcher(source);
+			while (m.find()) {
+				String name = PatternCommonConstants.getMethodFullName(m
+						.group(1));
+				if (name == null || name.equals("")) {
+					continue;
+				}
+				Index index = new Index();
+				index.setName(name);
+				if (PatternCommonConstants.isMethod(name)) {
+					index.setType(EntryType.Method.toString());
+				} else {
+					index.setType(EntryType.Field.toString());
+				}
+				index.setUrl(m.group(1));
+				index.setParent(getParent(index.getUrl()));
+				index.setApi(api);
+				indexs.add(index);
+			}
 		}
 	}
 

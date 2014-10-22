@@ -226,6 +226,7 @@ public class StartApplication extends Application {
 		fileChooser.setInitialDirectory(new File(System
 				.getProperty("user.home")));
 		fileChooser.getExtensionFilters().addAll(
+				new FileChooser.ExtensionFilter("*", "*.*"),
 				new FileChooser.ExtensionFilter("JAR", "*.jar"),
 				new FileChooser.ExtensionFilter("ZIP", "*.zip"));
 		fileChooser.setTitle("Open API Doc Zip File");
