@@ -14,6 +14,7 @@
 package com.chengjf.wtfdoc.ui;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.application.Application;
@@ -198,6 +199,8 @@ public class StartApplication extends Application {
 			}
 		}
 
+		// sort
+		Collections.sort(strList, String.CASE_INSENSITIVE_ORDER);
 		return strList;
 	}
 
